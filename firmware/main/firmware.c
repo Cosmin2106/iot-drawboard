@@ -6,8 +6,12 @@
 #include "max17048.h"
 #include "u8g2.h"
 
+#define CT_RAW_0_PCT    3300.0f
+#define CT_RAW_100_PCT  50.0f
 
 void app_main() {
+    ESP_ERROR_CHECK(gpio_set_direction(TR1_PIN, GPIO_MODE_INPUT));
+    ESP_ERROR_CHECK(gpio_set_direction(TR2_PIN, GPIO_MODE_INPUT));
     ESP_ERROR_CHECK(gpio_set_direction(LED_PIN, GPIO_MODE_OUTPUT));
     ESP_ERROR_CHECK(gpio_set_level(LED_PIN, 0));
 
@@ -49,23 +53,31 @@ void app_main() {
         float perc_ct1, perc_ct2;
         adc_oneshot_read(adc, channel_ct1, &raw_ct1);
         adc_oneshot_read(adc, channel_ct2, &raw_ct2);
-        perc_ct1 = (float)raw_ct1 * 100 / 3300;
-        perc_ct2 = (float)raw_ct2 * 100 / 3300;
+        perc_ct1 = ((float)raw_ct1 - CT_RAW_0_PCT) * 100.0f / (CT_RAW_100_PCT - CT_RAW_0_PCT);
+        perc_ct2 = ((float)raw_ct2 - CT_RAW_0_PCT) * 100.0f / (CT_RAW_100_PCT - CT_RAW_0_PCT);
+        if (perc_ct1 < 0.0f) perc_ct1 = 0.0f;
+        if (perc_ct1 > 100.0f) perc_ct1 = 100.0f;
+        if (perc_ct2 < 0.0f) perc_ct2 = 0.0f;
+        if (perc_ct2 > 100.0f) perc_ct2 = 100.0f;
 
         float perc_bat, v_bat;
         max17048_get_cell_percent(bat_gauge, &perc_bat);
         max17048_get_cell_voltage(bat_gauge, &v_bat);
 
-        char buffer1[16], buffer2[16], buffer3[32];
+        char buffer1[16], buffer2[16], buffer3[32], buffer4[16], buffer5[16];
         sprintf(buffer1, "CT1: %d%%", (int)perc_ct1);
         sprintf(buffer2, "CT2: %d%%", (int)perc_ct2);
         sprintf(buffer3, "BAT: %.1f%%, %.2fV", perc_bat, v_bat);
+        sprintf(buffer4, "BTN1: %s", gpio_get_level(TR1_PIN) == 1 ? "off" : "ON");
+        sprintf(buffer5, "BTN2: %s", gpio_get_level(TR2_PIN) == 1 ? "off" : "ON");
 
         u8g2_ClearBuffer(&dd);
         u8g2_SetFont(&dd, u8g2_font_ncenB08_tr);
-        u8g2_DrawStr(&dd, 0, 20, buffer1);
-        u8g2_DrawStr(&dd, 0, 40, buffer2);
-        u8g2_DrawStr(&dd, 0, 60, buffer3);
+        u8g2_DrawStr(&dd, 0, 10, buffer1);
+        u8g2_DrawStr(&dd, 0, 20, buffer2);
+        u8g2_DrawStr(&dd, 0, 30, buffer3);
+        u8g2_DrawStr(&dd, 0, 40, buffer4);
+        u8g2_DrawStr(&dd, 0, 50, buffer5);
         u8g2_SendBuffer(&dd);
     }
 }

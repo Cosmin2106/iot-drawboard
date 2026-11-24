@@ -8,6 +8,8 @@
 
 #define CT1_PIN GPIO_NUM_0
 #define CT2_PIN GPIO_NUM_1
+#define TR1_PIN GPIO_NUM_2
+#define TR2_PIN GPIO_NUM_3
 #define LED_PIN GPIO_NUM_15
 #define SCL_PIN GPIO_NUM_18
 #define SDA_PIN GPIO_NUM_19
