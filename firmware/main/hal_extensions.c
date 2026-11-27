@@ -5,7 +5,6 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
-
 static i2c_config_t i2c_config = {
     .mode = I2C_MODE_MASTER,
     .sda_io_num = SDA_PIN,

@@ -1,6 +1,7 @@
 set(SOURCES
-        firmware.c
+        firmware.cpp
         hal_extensions.c
+        hw_peripherals.cpp
 )
 
 idf_component_register(
