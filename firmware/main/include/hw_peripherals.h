@@ -10,12 +10,12 @@
 #define CT_RAW_100_PCT  50
 
 class HWPeripherals {
-    inline static portMUX_TYPE* state_mux = nullptr;
+    inline static portMUX_TYPE* state_mux_ = nullptr;
 
-    static adc_oneshot_unit_handle_t adc;
-    static adc_channel_t channel_ct1;
-    static adc_channel_t channel_ct2;
-    static max17048_handle_t bat_gauge;
+    static adc_oneshot_unit_handle_t adc_;
+    static adc_channel_t channel_ct1_;
+    static adc_channel_t channel_ct2_;
+    static max17048_handle_t bat_gauge_;
 
 public:
     static bool trigger_left_pressed;

@@ -2,6 +2,8 @@ set(SOURCES
         firmware.cpp
         hal_extensions.c
         hw_peripherals.cpp
+        ui/ui.cpp
+        ui/canvas.cpp
 )
 
 idf_component_register(
