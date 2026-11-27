@@ -7,6 +7,10 @@ Canvas::Canvas(const HWPeripherals& peripherals, portMUX_TYPE& mux, const bool t
     peripherals_(peripherals), mux_(mux), topbar_on_(topbar_on), title_(std::move(title)) {
 }
 
+void Canvas::focus(const bool focused) {
+    focused_ = focused;
+}
+
 void Canvas::beginDraw() const {
     u8g2_SetFontMode(&HWPeripherals::dd, 1);
     u8g2_ClearBuffer(&HWPeripherals::dd);
@@ -33,7 +37,7 @@ void Canvas::beginDraw() const {
             13,
             (std::to_string(std::min(static_cast<int>(bat_perc), 100)) + "%").c_str()
         );
-        u8g2_DrawHLine(&HWPeripherals::dd, 0, 18, u8g2_GetDisplayWidth(&HWPeripherals::dd));
+        u8g2_DrawHLine(&HWPeripherals::dd, 0, TopbarHeight, u8g2_GetDisplayWidth(&HWPeripherals::dd));
     }
 }
 
@@ -41,7 +45,10 @@ void Canvas::endDraw() const {
     u8g2_SendBuffer(&HWPeripherals::dd);
 }
 
-void Canvas::draw() const {
+void Canvas::draw() {
+    if (!isFocused()) {
+        return;
+    }
     beginDraw();
     endDraw();
 }

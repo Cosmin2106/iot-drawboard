@@ -4,6 +4,7 @@ set(SOURCES
         hw_peripherals.cpp
         ui/ui.cpp
         ui/canvas.cpp
+        ui/list.cpp
 )
 
 idf_component_register(
