@@ -17,7 +17,7 @@ public:
 
     void setCurrentPosition(int pos);
 
-    [[nodiscard]] unsigned int getCurrentPosition() const;
+    [[nodiscard]] int getCurrentPosition() const;
 
     [[nodiscard]] unsigned int size() const { return items_.size(); }
 

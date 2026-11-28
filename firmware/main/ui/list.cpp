@@ -13,7 +13,7 @@ void UIList::setCurrentPosition(const int pos) {
     position_ = std::clamp(pos, 0, static_cast<int>(items_.size()) - 1);
 }
 
-unsigned int UIList::getCurrentPosition() const {
+int UIList::getCurrentPosition() const {
     return position_;
 }
 

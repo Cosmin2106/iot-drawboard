@@ -55,14 +55,6 @@ void UI::back() {
 }
 
 void UI::lazyDraw() {
-    portENTER_CRITICAL(mux_);
-    current_hw_state_.trigger_left_pressed = HWPeripherals::trigger_left_pressed;
-    current_hw_state_.trigger_right_pressed = HWPeripherals::trigger_right_pressed;
-    current_hw_state_.pot_left_perc = HWPeripherals::pot_left_perc;
-    current_hw_state_.pot_right_perc = HWPeripherals::pot_right_perc;
-    current_hw_state_.bat_perc = static_cast<int>(HWPeripherals::bat_perc_raw);
-    portEXIT_CRITICAL(mux_);
-
     if (current_hw_state_ != old_hw_state_ || change_screens_) {
         active_screen_->draw();
         old_hw_state_ = current_hw_state_;
@@ -71,13 +63,17 @@ void UI::lazyDraw() {
 }
 
 void UI::addScreen(Canvas& screen, const bool focused,
-                   std::tuple<int, Canvas*, Canvas*, std::function<void()>> screen_nav_map) {
-    ui_graph_[&screen].push_back({
-        .node_id = std::get<0>(screen_nav_map),
-        .from = std::get<1>(screen_nav_map),
-        .to = std::get<2>(screen_nav_map),
-        .on_select = std::move(std::get<3>(screen_nav_map))
-    });
+                   std::vector<std::tuple<int, Canvas*, Canvas*, std::function<void()>>> screen_nav_map) {
+    auto& nodes = ui_graph_[&screen];
+    nodes.reserve(nodes.size() + screen_nav_map.size());
+    for (auto& [node_id, from, to, on_select] : screen_nav_map) {
+        nodes.push_back({
+            .node_id = node_id,
+            .from = from,
+            .to = to,
+            .on_select = std::move(on_select)
+        });
+    }
 
     if (focused) {
         setActiveScreen(screen);
@@ -92,12 +88,26 @@ void UI::draw() {
         return;
     }
 
+    portENTER_CRITICAL(mux_);
+    current_hw_state_.trigger_left_pressed = HWPeripherals::trigger_left_pressed;
+    current_hw_state_.trigger_right_pressed = HWPeripherals::trigger_right_pressed;
+    current_hw_state_.pot_left_perc = HWPeripherals::pot_left_perc;
+    current_hw_state_.pot_right_perc = HWPeripherals::pot_right_perc;
+    current_hw_state_.bat_perc = static_cast<int>(HWPeripherals::bat_perc_raw);
+    portEXIT_CRITICAL(mux_);
+
     if (auto* active_list = dynamic_cast<UIList*>(active_screen_)) {
         portENTER_CRITICAL(mux_);
         if (active_list->size()) {
             active_list->setCurrentPosition(HWPeripherals::pot_left_perc * static_cast<int>(active_list->size()) / 100);
         }
         portEXIT_CRITICAL(mux_);
+        if (current_hw_state_.trigger_left_pressed && !old_hw_state_.trigger_left_pressed) {
+            back();
+        }
+        if (current_hw_state_.trigger_right_pressed && !old_hw_state_.trigger_right_pressed) {
+            select(active_list->getCurrentPosition());
+        }
     }
     lazyDraw();
 }

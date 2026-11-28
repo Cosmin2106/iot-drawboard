@@ -12,19 +12,30 @@ static void init_ui() {
     UI::init(state_mux);
 
     static UIList menu_list(state_mux, true, "MENU", {
-        "Draw Solo",
-        "Host Session",
-        "Join Session",
-        "Download Drawings",
-        "Change Brightness",
-        "Debug Info"
-    });
-    UI::addScreen(menu_list, true, {0, nullptr, nullptr, nullptr});
-    UI::addScreen(menu_list, true, {1, nullptr, nullptr, nullptr});
-    UI::addScreen(menu_list, true, {2, nullptr, nullptr, nullptr});
-    UI::addScreen(menu_list, true, {3, nullptr, nullptr, nullptr});
-    UI::addScreen(menu_list, true, {4, nullptr, nullptr, nullptr});
-    UI::addScreen(menu_list, true, {5, nullptr, nullptr, nullptr});
+                                "Draw Solo",
+                                "Host Session",
+                                "Join Session",
+                                "Download Drawings",
+                                "Change Brightness",
+                                "Debug Info"
+                            });
+    static UIList test1_list(state_mux, true, "TEST 1", {
+                                 "Test Item 1",
+                             });
+    static UIList test2_list(state_mux, true, "TEST 2", {
+                                 "Test Item 2",
+                             });
+
+    UI::addScreen(menu_list, true, {
+                      {0, nullptr, &test1_list, nullptr},
+                      {1, nullptr, &test2_list, nullptr},
+                      {2, nullptr, nullptr, nullptr},
+                      {3, nullptr, nullptr, nullptr},
+                      {4, nullptr, nullptr, nullptr},
+                      {5, nullptr, nullptr, nullptr}
+                  });
+    UI::addScreen(test1_list, false, {{0, &menu_list, nullptr, nullptr}});
+    UI::addScreen(test2_list, false, {{0, &menu_list, nullptr, nullptr}});
 }
 
 static void update_inputs_task(void*) {
