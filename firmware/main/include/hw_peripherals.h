@@ -22,17 +22,23 @@ public:
     static bool trigger_right_pressed;
     static int pot_left_perc;
     static int pot_right_perc;
-    static float bat_perc;
+    static float bat_perc_raw;
     static float bat_v;
     static u8g2_t dd;
 
     HWPeripherals() = default;
+
     HWPeripherals(const HWPeripherals&) = delete;
+
     HWPeripherals(HWPeripherals&&) = delete;
+
     HWPeripherals& operator=(const HWPeripherals&) = delete;
+
     HWPeripherals& operator=(HWPeripherals&&) = delete;
 
     static void init(portMUX_TYPE& mux);
+
     static HWPeripherals& instance();
+
     static void updateInputs();
 };

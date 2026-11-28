@@ -16,7 +16,7 @@ bool HWPeripherals::trigger_left_pressed{};
 bool HWPeripherals::trigger_right_pressed{};
 int HWPeripherals::pot_left_perc{};
 int HWPeripherals::pot_right_perc{};
-float HWPeripherals::bat_perc{};
+float HWPeripherals::bat_perc_raw{};
 float HWPeripherals::bat_v{};
 u8g2_t HWPeripherals::dd{};
 
@@ -88,7 +88,7 @@ void HWPeripherals::updateInputs() {
     trigger_right_pressed = right_pressed;
     pot_left_perc = left_percentage;
     pot_right_perc = right_percentage;
-    bat_perc = battery_read_ok ? percentage : -1.0f;
+    bat_perc_raw = battery_read_ok ? percentage : -1.0f;
     bat_v = battery_read_ok ? voltage : -1.0f;
     portEXIT_CRITICAL(state_mux_);
 }

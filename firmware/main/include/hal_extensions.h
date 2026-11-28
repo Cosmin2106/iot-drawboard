@@ -21,7 +21,9 @@ extern "C" {
 extern i2c_bus_handle_t i2c_bus;
 
 void init_i2c(void);
+
 uint8_t hal_u8g2_cb(u8x8_t* u8x8, uint8_t msg, uint8_t count, void* data);
+
 uint8_t hal_u8g2_delay(u8x8_t* u8x8, uint8_t msg, uint8_t value, void* data);
 
 #ifdef __cplusplus

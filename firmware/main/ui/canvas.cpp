@@ -3,8 +3,10 @@
 #include <algorithm>
 #include <utility>
 
-Canvas::Canvas(const HWPeripherals& peripherals, portMUX_TYPE& mux, const bool topbar_on, std::string title) :
-    peripherals_(peripherals), mux_(mux), topbar_on_(topbar_on), title_(std::move(title)) {
+#include "hw_peripherals.h"
+
+Canvas::Canvas(portMUX_TYPE& mux, const bool topbar_on, std::string title) :
+    mux_(mux), topbar_on_(topbar_on), title_(std::move(title)) {
 }
 
 void Canvas::focus(const bool focused) {
@@ -18,7 +20,7 @@ void Canvas::beginDraw() const {
 
     if (topbar_on_) {
         portENTER_CRITICAL(mux_);
-        const float bat_perc = HWPeripherals::bat_perc;
+        const float bat_perc = HWPeripherals::bat_perc_raw;
         portEXIT_CRITICAL(mux_);
 
         u8g2_SetFont(&HWPeripherals::dd, u8g2_font_9x15B_tr);

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <vector>
 
 #include "canvas.h"
@@ -12,10 +13,15 @@ class UIList : public Canvas {
     std::vector<std::string> items_{};
 
 public:
-    UIList(const HWPeripherals& peripherals, portMUX_TYPE& mux, bool topbar_on, std::string title = "");
+    UIList(portMUX_TYPE& mux, bool topbar_on, std::string title = "");
+
     void addItem(std::string item);
-    void scrollUp();
-    void scrollDown();
+
+    void setCurrentPosition(int pos);
+
     [[nodiscard]] unsigned int getCurrentPosition() const;
+
+    [[nodiscard]] unsigned int size() const { return items_.size(); }
+
     void draw() override;
 };

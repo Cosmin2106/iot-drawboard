@@ -2,10 +2,9 @@
 
 #include <string>
 
-#include "hw_peripherals.h"
+#include "freertos/FreeRTOS.h"
 
 class Canvas {
-    const HWPeripherals& peripherals_;
     portMUX_TYPE& mux_;
     bool focused_ = false;
     bool topbar_on_;
@@ -20,8 +19,11 @@ protected:
     void endDraw() const;
 
 public:
-    Canvas(const HWPeripherals& peripherals, portMUX_TYPE& mux, bool topbar_on, std::string title = "");
+    Canvas(portMUX_TYPE& mux, bool topbar_on, std::string title = "");
+
     virtual ~Canvas() = default;
+
     void focus(bool focused);
+
     virtual void draw();
 };

@@ -3,22 +3,18 @@
 #include <algorithm>
 #include <utility>
 
-UIList::UIList(const HWPeripherals& peripherals, portMUX_TYPE& mux, const bool topbar_on, std::string title) :
-    Canvas(peripherals, mux, topbar_on, std::move(title)) {
+#include "hw_peripherals.h"
+
+UIList::UIList(portMUX_TYPE& mux, const bool topbar_on, std::string title) :
+    Canvas(mux, topbar_on, std::move(title)) {
 }
 
 void UIList::addItem(std::string item) {
     items_.emplace_back(std::move(item));
 }
 
-void UIList::scrollUp() {
-    position_ = std::max(position_ - 1, 0);
-}
-
-void UIList::scrollDown() {
-    if (position_ + 1 < static_cast<int>(items_.size())) {
-        ++position_;
-    }
+void UIList::setCurrentPosition(const int pos) {
+    position_ = std::clamp(pos, 0, static_cast<int>(items_.size()) - 1);
 }
 
 unsigned int UIList::getCurrentPosition() const {
@@ -46,7 +42,7 @@ void UIList::draw() {
         u8g2_GetDisplayWidth(&HWPeripherals::dd),
         u8g2_GetDisplayHeight(&HWPeripherals::dd)
     );
-    u8g2_SetFont(&HWPeripherals::dd, u8g2_font_6x12_tr);
+    u8g2_SetFont(&HWPeripherals::dd, u8g2_font_6x13_tr);
     u8g2_SetFontPosBaseline(&HWPeripherals::dd);
 
     for (
