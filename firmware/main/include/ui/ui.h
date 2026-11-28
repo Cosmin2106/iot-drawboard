@@ -57,8 +57,8 @@ public:
 
     static void init(portMUX_TYPE& mux);
 
-    static void addScreen(Canvas& screen, bool focused, const std::tuple<int, Canvas*, Canvas*>& screen_nav_map,
-                          std::function<void()> on_select = {});
+    static void addScreen(Canvas& screen, bool focused,
+                          std::tuple<int, Canvas*, Canvas*, std::function<void()>> screen_nav_map);
 
     static void draw();
 };

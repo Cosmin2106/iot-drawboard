@@ -7,6 +7,7 @@
 
 UI::TrackedHWState UI::current_hw_state_{};
 UI::TrackedHWState UI::old_hw_state_{};
+bool UI::change_screens_ = false;
 std::map<Canvas*, std::vector<UINode>> UI::ui_graph_{};
 
 void UI::init(portMUX_TYPE& mux) {
@@ -69,13 +70,13 @@ void UI::lazyDraw() {
     }
 }
 
-void UI::addScreen(Canvas& screen, const bool focused, const std::tuple<int, Canvas*, Canvas*>& screen_nav_map,
-                   std::function<void()> on_select) {
+void UI::addScreen(Canvas& screen, const bool focused,
+                   std::tuple<int, Canvas*, Canvas*, std::function<void()>> screen_nav_map) {
     ui_graph_[&screen].push_back({
         .node_id = std::get<0>(screen_nav_map),
         .from = std::get<1>(screen_nav_map),
         .to = std::get<2>(screen_nav_map),
-        .on_select = std::move(on_select)
+        .on_select = std::move(std::get<3>(screen_nav_map))
     });
 
     if (focused) {

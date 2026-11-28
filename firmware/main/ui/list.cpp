@@ -5,12 +5,8 @@
 
 #include "hw_peripherals.h"
 
-UIList::UIList(portMUX_TYPE& mux, const bool topbar_on, std::string title) :
-    Canvas(mux, topbar_on, std::move(title)) {
-}
-
-void UIList::addItem(std::string item) {
-    items_.emplace_back(std::move(item));
+UIList::UIList(portMUX_TYPE& mux, const bool topbar_on, std::string title, std::vector<std::string> items) :
+    Canvas(mux, topbar_on, std::move(title)), items_(std::move(items)) {
 }
 
 void UIList::setCurrentPosition(const int pos) {

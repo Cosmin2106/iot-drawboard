@@ -10,12 +10,10 @@ class UIList : public Canvas {
 
     int position_ = 0;
     int first_visible_item_ = 0;
-    std::vector<std::string> items_{};
+    std::vector<std::string> items_;
 
 public:
-    UIList(portMUX_TYPE& mux, bool topbar_on, std::string title = "");
-
-    void addItem(std::string item);
+    UIList(portMUX_TYPE& mux, bool topbar_on, std::string title = "", std::vector<std::string> items = {});
 
     void setCurrentPosition(int pos);
 
